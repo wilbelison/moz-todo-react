@@ -6,12 +6,24 @@ function Todo(props) {
 
 	const editFieldRef = useRef(null)
 	const editButtonRef = useRef(null)
-    
-	useEffect(() => {
-		console.log('side effect')
-	})
 
-    console.log("main render")
+	function usePrevious(value) {
+		const ref = useRef()
+		useEffect(() => {
+			ref.current = value
+		})
+		return ref.current
+	}
+
+	const wasEditing = usePrevious(isEditing)
+
+	useEffect(() => {
+		if (!wasEditing && isEditing) {
+			editFieldRef.current.focus()
+		} else if (wasEditing && !isEditing) {
+			editButtonRef.current.focus()
+		}
+	}, [wasEditing, isEditing])
 
 	function handleChange(event) {
 		setNewName(event.target.value)
